@@ -1,0 +1,20 @@
+
+creds:
+  # creds to use phoenix@juniorisep.com
+  kiwi-auth@cnje.org:
+      email: <>
+      type: gmail
+      refresh_token: <>
+      client_id: <>
+      client_secret: <>
+
+templates:
+  # minio doesn't support the last options
+  s3:
+    host: <>
+    passkey: <>
+    accesskey: <>
+    bucket_name: <>
+
+  local:
+    folder: templates

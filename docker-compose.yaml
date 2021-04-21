@@ -1,0 +1,29 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    volumes:
+      - ./data/rabbitmq/etc/:/etc/rabbitmq/
+      - ./data/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./data/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+      # RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+      RABBITMQ_DEFAULT_USER: rabbitUser
+      RABBITMQ_DEFAULT_PASS: rabbitPass
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  database:
+    image: postgres:12.2
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: mail_engine
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
