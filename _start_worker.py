@@ -1,10 +1,13 @@
-from services.worker.app.worker import main
-import sys
 import os
+import sys
+
+from services.worker.app.worker import start_worker
 
 if __name__ == '__main__':
+    conf_filename = 'conf.yaml'
+    template_provider = 'local'
     try:
-        main('conf.yaml')
+        start_worker(conf_filename, template_provider)
     except KeyboardInterrupt:
         print('Interrupted')
         try:

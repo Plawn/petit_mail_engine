@@ -1,12 +1,13 @@
 import logging
-from services.worker.app.senders.gmail_implem import GmailEmailSender
 from typing import Dict, Type
 
 import yaml
 
+from ...db_definition import content
 from .data_structure import Context
 from .senders import EmailSender
 from .senders import engines as mail_engines
+from .senders.gmail_implem import GmailEmailSender
 from .senders.sender_identity import Identity
 from .template_db import engines as template_db_engines
 from .template_db.interface import TemplateDB
@@ -55,3 +56,12 @@ def load_context(creds_filename: str, template_provider: str) -> Context:
 
 def make_template_filename(template_name: str):
     return template_name + '.html'
+
+
+def merge_data(content: content) -> dict:
+    b = content.base_content.data or {}
+    s = content.data or {}
+    # merge data
+    for k, v in s.items():
+        b[k] = v
+    return b
