@@ -25,18 +25,18 @@ data = {
     "from": "Kiwi Auth",
     "template_name": "junior/new-logo",
     "base_data": {
-        "junior":{
-            "name":"JISEP"
+        "junior": {
+            "name": "JISEP"
         }
     },
-    "data":[
-        {
-            "user":"Paul"    
+    "data": {
+        "0": {
+            "user": "Paul"
         },
-        {
-            "user":"Jeb"
+        "1": {
+            "user": "Jeb"
         }
-    ]
+    }
 }
 
 r = requests.post(url + "/send/kiwi/html", json=data)

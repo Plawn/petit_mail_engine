@@ -18,5 +18,5 @@ class SendPlainMailBody(BaseSendMailBody):
 
 class SendTemplateMailBody(BaseSendMailBody):
     template_name: str
-    data: Optional[List[Dict[str, Any]]]
+    data: Optional[Dict[str, Any]]
     base_data: Dict[str, Any]

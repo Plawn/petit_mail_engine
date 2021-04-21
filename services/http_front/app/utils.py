@@ -103,7 +103,7 @@ def send_mail(identity: str, content: List[Content], from_: str, adresses: List[
             content=c,
             recipient=recipient,
             sender=sender,
-        ) for recipient, sender, c in zip(recipients, senders, itertools.cycle(content))
+        ) for recipient, sender, c in zip(recipients, senders, content)  # clean content
     ]
     database.commit()
     # save
