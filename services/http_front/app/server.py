@@ -8,7 +8,7 @@ from .dto import SendPlainMailBody, SendTemplateMailBody
 router = APIRouter()
 
 
-@router.post('/send/{identity}/html')
+@router.post('/{identity}/html')
 @db_session
 def send_mail_html(identity: str, body: SendTemplateMailBody):
     # todo, fix
@@ -40,7 +40,7 @@ def send_mail_html(identity: str, body: SendTemplateMailBody):
     utils.send_mail(identity, content, body.from_, body.addresses)
 
 
-@router.post('/send/{identity}/plain')
+@router.post('/{identity}/plain')
 @db_session
 def send_mail_plain(identity: str, body: SendPlainMailBody):
     content = [Content(
@@ -50,12 +50,3 @@ def send_mail_plain(identity: str, body: SendPlainMailBody):
     utils.send_mail(identity, itertools.cycle(content), body.from_, body.addresses)
 
 
-@router.get('/live')
-def live():
-    return Response('OK')
-
-
-@router.get('/templates')
-def list_templates():
-    # TODO
-    pass

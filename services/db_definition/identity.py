@@ -12,3 +12,11 @@ class Identity(database.Entity):
     name = Required(str)
 
 
+
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'senders': [s.to_json() for s in self.senders],
+        }

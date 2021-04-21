@@ -20,3 +20,12 @@ class SendTemplateMailBody(BaseSendMailBody):
     template_name: str
     data: Optional[Dict[str, Any]]
     base_data: Dict[str, Any]
+
+
+class CreateIdentityBody(BaseModel):
+    name: str
+
+
+class CreateSenderBody(BaseModel):
+    email: str
+    quota: int
