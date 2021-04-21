@@ -1,0 +1,6 @@
+__pycache__
+.vscode
+conf.yaml
+db_data_ps
+data
+.docker
