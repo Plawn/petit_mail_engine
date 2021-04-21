@@ -18,6 +18,8 @@ from .senders.interface import Email as EmailObj
 
 
 def make_callback(context: Context):
+    """Creates a callback from the given context
+    """
     senders_db = context.senders_db
     template_db = context.template_db
 
@@ -66,6 +68,8 @@ def make_callback(context: Context):
 
 
 def start_worker(conf_file: str, profile: str):
+    """Starts a worker with the given configuration
+    """
     init_db(credentials)
     channel = get_channel()
     context = load_context(conf_file, profile)
