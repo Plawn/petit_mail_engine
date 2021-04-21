@@ -1,12 +1,13 @@
 
 
-import itertools
 import json
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from ...db_definition import (Content, Email, Identity, Recipient, Sender,
                               database)
-from ...queue_definition import QUEUE_NAME, channel
+from ...queue_definition import QUEUE_NAME, get_channel
+
+channel = get_channel()
 
 
 def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:

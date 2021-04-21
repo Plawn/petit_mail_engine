@@ -10,7 +10,7 @@ from services.db_definition.sender import Sender
 from services.worker.app.utils import load_context
 
 from ...db_definition import Content, Email, credentials, init_db
-from ...queue_definition import QUEUE_NAME, channel
+from ...queue_definition import QUEUE_NAME, get_channel
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
 from .data_structure import Context
@@ -67,9 +67,9 @@ def make_callback(context: Context):
 
 def start_worker(conf_file: str, profile: str):
     init_db(credentials)
-
+    channel = get_channel()
     context = load_context(conf_file, profile)
-    
+
     context.template_db.bind_render_functions(BasicRenderFunctions())
     context.template_db.init()
     callback = make_callback(context)
