@@ -6,6 +6,11 @@ from .base import database
 
 
 class Content(database.Entity):
+    """The content of an email
+
+    If this entity contains a non-null content, it will be considered as a plain email
+    otherwise the worker will attempt to render the email using the data contained in the data field and the base_content entity
+    """
     id = PrimaryKey(int, auto=True)
     # if the content is rendered
     base_content = Optional('CommonContent', nullable=True)

@@ -7,12 +7,17 @@ from .base import database
 class Sender(database.Entity):
     id = PrimaryKey(int, auto=True)
     email = Required(str)
+    
+
+    """Number of emails scheduled but not sent
+    """
     pending = Required(int, default=0)
     identity = Required('Identity', reverse="senders")
     emails = Set('Email', reverse="sender")
     credentials = Required(Json)
     
-    
+    """The number of email which can be sent by this account for 24h
+    """
     quota = Required(int)
 
     def to_json(self):

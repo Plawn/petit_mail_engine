@@ -1,4 +1,3 @@
-from typing import Optional
 from pony.orm import Database, db_session
 from dataclasses import dataclass
 
@@ -7,6 +6,8 @@ database = Database()
 
 @dataclass
 class DBSettings:
+    """Contains the differents fields in order to connect the worker and the http front to the database
+    """
     username: str
     password: str
     host: str
@@ -15,7 +16,9 @@ class DBSettings:
 
 
 def init_db(settings: DBSettings, drop_database: bool = False):
-    # recreate_db = settings['recreate_db']
+    """
+    Will init the database object in order to be used
+    """
     database.bind(
         provider='postgres',
         user=settings.username,
