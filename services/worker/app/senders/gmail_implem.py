@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
@@ -8,7 +9,7 @@ from typing import List, Type
 import google.oauth2.credentials as Creds
 from googleapiclient.discovery import build
 
-from .interface import EmailSender, Email
+from .interface import Email, EmailSender
 
 
 @dataclass
@@ -26,8 +27,8 @@ scopes = ['https://www.googleapis.com/auth/gmail.send']
 
 class GmailEmailSender(EmailSender[GmailCreds]):
     @staticmethod
-    def of(credentials:dict) -> Type[GmailCreds]:
-        print(GmailEmailSender(GmailCreds(**credentials)))
+    def of(credentials:dict) -> Type[GmailEmailSender]:
+        # print(GmailEmailSender(GmailCreds(**credentials)))
         return GmailEmailSender(GmailCreds(**credentials))
 
     def __init__(self, gmailCreds: GmailCreds):

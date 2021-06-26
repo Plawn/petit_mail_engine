@@ -1,4 +1,5 @@
 import logging
+from services.worker.app.senders.SMTP_implem import SMTPMailHandler
 from typing import Dict, Type
 
 import yaml
@@ -24,6 +25,8 @@ def load_mail_senders(creds: dict) -> Dict[str, EmailSender]:
         del infos['type']
         if type_ == "gmail":
             senders_db[name] = GmailEmailSender.of(infos)
+        if type_ == "smtp":
+            senders_db[name] = SMTPMailHandler.of(infos)
     return senders_db
 
 

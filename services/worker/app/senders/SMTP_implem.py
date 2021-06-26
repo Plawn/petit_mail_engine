@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import smtplib
 import threading
@@ -6,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Optional, Type
 
-from .interface import EmailSender, Email
+from .interface import Email, EmailSender
 
 
 @dataclass
@@ -20,8 +22,9 @@ class SMTPCreds:
 class SMTPMailHandler(EmailSender[SMTPCreds]):
     MAX_RETRIES = 5
 
-    def get_creds_form(self) -> Type[SMTPCreds]:
-        return SMTPCreds
+    @staticmethod
+    def of(credentials: dict) -> Type[SMTPMailHandler]:
+        return SMTPMailHandler(SMTPCreds(**credentials))
 
     def __init__(self, creds: SMTPCreds):
         self.email = creds.email
