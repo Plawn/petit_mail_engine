@@ -26,3 +26,23 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
+
+  worker:
+    # image: <>
+    build: ./Dockerfile.worker
+    environment: 
+      - CONF_FILE=conf.yaml
+    volumes: 
+      - ./conf.yaml:/api/conf.yaml
+    restart: unless-stopped
+
+  front:
+    # image: <>
+    build: ./Dockerfile.http_front
+    environment: 
+      - CONF_FILE=conf.yaml
+    ports :
+      - "5000:5000"
+    volumes: 
+      - ./conf.yaml:/api/conf.yaml
+    restart: unless-stopped

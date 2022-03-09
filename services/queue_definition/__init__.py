@@ -1,17 +1,20 @@
+import os
+
 import pika
+import yaml
 from pika.adapters.blocking_connection import BlockingChannel
-
-
-# todo, load from conf
-
 
 QUEUE_NAME = 'mail_queue'
 
-
 def get_channel() -> BlockingChannel:
-    rabbitHost = 'localhost'
-    rabbit_user = "rabbitUser"
-    rabbit_password = "rabbitPass"
+    # TODO: not optimal but good enough
+    with open(os.environ.get('CONF_FILE', "conf.yaml"), 'r') as f :
+        conf = yaml.safe_load(f)['queue']
+    
+    rabbitHost = conf['address']
+    rabbit_user = conf['user']
+    rabbit_password = conf['password']
+    
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
             host=rabbitHost,
