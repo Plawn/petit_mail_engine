@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from starlette.responses import Response
+
 from ...db_definition import Identity, Sender, db_session
 from .dto import CreateIdentityBody, CreateSenderBody
-
 
 # add security here
 router = APIRouter()

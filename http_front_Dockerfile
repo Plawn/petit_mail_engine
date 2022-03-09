@@ -1,0 +1,15 @@
+FROM python:3.8.6-slim
+
+WORKDIR /api
+
+COPY ./services/http_front/requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENV CONF_FILE=conf.yaml
+
+EXPOSE 5000
+
+ENTRYPOINT ["uvicorn", "services.http_front.app.core:app", "--port", "5000"]
