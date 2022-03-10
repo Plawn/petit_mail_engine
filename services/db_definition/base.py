@@ -55,7 +55,7 @@ def load_settings():
     with open(os.environ.get('CONF_FILE', 'conf.yaml'), 'r') as f:
         conf = yaml.safe_load(f)['database']
         return DBSettings(
-            conf['user'], conf['password'], conf['host'], conf['port'], conf['database'],
+            conf['username'], conf['password'], conf['host'], conf['port'], conf['database'],
         )
 
 
