@@ -19,14 +19,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push http_front
-        id: docker_build
+        id: docker_build_front
         uses: docker/build-push-action@v2
         with:
           push: true
           file: Dockerfile.http_front
           tags: plawn/petit_mail_engine_http_front:latest
       - name: Build and push worker
-        id: docker_build
+        id: docker_build_worker
         uses: docker/build-push-action@v2
         with:
           push: true
