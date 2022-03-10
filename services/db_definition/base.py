@@ -1,5 +1,7 @@
-from pony.orm import Database, db_session
+import os
 from dataclasses import dataclass
+import yaml
+from pony.orm import Database, db_session
 
 database = Database()
 
@@ -37,8 +39,8 @@ def init_db(settings: DBSettings, drop_database: bool = False):
         with db_session:
             i = Identity(name="kiwi")
             s = Sender(
-                credentials={}, 
-                quota=400, 
+                credentials={},
+                quota=400,
                 email="kiwi-auth@cnje.org",
                 identity=i
             )
@@ -49,6 +51,12 @@ def init_db(settings: DBSettings, drop_database: bool = False):
             pass
 
 
-credentials = DBSettings(
-    'root', 'root', 'localhost', '5432', 'mail_engine'
-)
+def load_settings():
+    with open(os.environ.get('CONF_FILE', 'conf.yaml'), 'r') as f:
+        conf = yaml.safe_load(f)['database']
+        return DBSettings(
+            conf['user'], conf['password'], conf['host'], conf['port'], conf['database'],
+        )
+
+
+credentials = load_settings()

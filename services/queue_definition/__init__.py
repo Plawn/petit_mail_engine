@@ -11,7 +11,7 @@ def get_channel() -> BlockingChannel:
     with open(os.environ.get('CONF_FILE', "conf.yaml"), 'r') as f :
         conf = yaml.safe_load(f)['queue']
     
-    rabbitHost = conf['address']
+    rabbitHost = conf['host']
     rabbit_user = conf['user']
     rabbit_password = conf['password']
     
