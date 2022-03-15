@@ -6,10 +6,11 @@ from datetime import datetime
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic
+from retry import retry
 from services.db_definition.sender import Sender
 from services.worker.app.utils import load_context
 
-from ...db_definition import Content, Email, credentials, init_db, db_session
+from ...db_definition import Content, Email, credentials, db_session, init_db
 from ...queue_definition import QUEUE_NAME, get_channel
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
@@ -67,7 +68,7 @@ def make_callback(context: Context):
 
     return callback
 
-
+@retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
 def start_worker(conf_file: str, profile: str):
     """Starts a worker with the given configuration
     """

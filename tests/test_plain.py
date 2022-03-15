@@ -22,7 +22,7 @@ data = {
         ['paul.leveau@cnje.org'],
         ['paul.leveau@gmail.com', 'plawn.yay@gmail.com'],
     ],
-    "subject": "test2",
+    "subject": "test",
     "from": "Kiwi Auth",
     "content": "Coucou, petit test depuis l'api de mails"
 }
