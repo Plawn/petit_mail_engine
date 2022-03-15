@@ -6,7 +6,7 @@ from pika.adapters.blocking_connection import BlockingChannel
 
 QUEUE_NAME = 'mail_queue'
 
-def get_channel() -> BlockingChannel:
+def get_channel(passive: bool) -> BlockingChannel:
     # TODO: not optimal but good enough
     with open(os.environ.get('CONF_FILE', "conf.yaml"), 'r') as f :
         conf = yaml.safe_load(f)['queue']
@@ -27,6 +27,6 @@ def get_channel() -> BlockingChannel:
 
     channel = connection.channel()
 
-    channel.queue_declare(queue=QUEUE_NAME)
+    channel.queue_declare(queue=QUEUE_NAME, passive=passive)
 
     return channel

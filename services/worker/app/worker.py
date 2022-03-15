@@ -72,7 +72,7 @@ def start_worker(conf_file: str, profile: str):
     """Starts a worker with the given configuration
     """
     init_db(credentials)
-    channel = get_channel()
+    channel = get_channel(passive=True)
     context = load_context(conf_file, profile)
 
     context.template_db.bind_render_functions(BasicRenderFunctions())

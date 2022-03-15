@@ -7,7 +7,7 @@ from ...db_definition import (Content, Email, Identity, Recipient, Sender,
                               database)
 from ...queue_definition import QUEUE_NAME, get_channel
 
-channel = get_channel()
+channel = get_channel(False)
 
 
 def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
