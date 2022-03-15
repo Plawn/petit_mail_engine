@@ -10,10 +10,11 @@ class Identity(database.Entity):
     
     emails = Set('Email', reverse="identity")
     
+    senders = Set('Sender', reverse="identity")
     """All the email accounts used in order to send more than the maximum per account
     """
-    senders = Set('Sender', reverse="identity")
     
+    name = Required(str)
     """Name used in order to differentiate all identities
 
     - business
@@ -23,10 +24,6 @@ class Identity(database.Entity):
         - legal01@example.com
         - legal02@example.com
     """
-    name = Required(str)
-
-
-
 
     def to_json(self):
         return {

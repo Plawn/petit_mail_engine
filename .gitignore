@@ -4,3 +4,6 @@ conf.yaml
 db_data_ps
 data
 .docker
+.DS_Store
+*/.DS_Store
+*.DS_Store
