@@ -12,4 +12,4 @@ ENV CONF_FILE=conf.yaml
 
 EXPOSE 5000
 
-ENTRYPOINT ["uvicorn", "services.http_front.app.core:app", "--port", "5000"]
+ENTRYPOINT ["uvicorn", "services.http_front.app.core:app", "--port", "5000", "--host", "0.0.0.0"]

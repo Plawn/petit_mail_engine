@@ -2,6 +2,7 @@ import requests
 
 url = 'http://localhost:8000'
 
+url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
 
 # addresses: List[List[str]]
 #     content: str = ''

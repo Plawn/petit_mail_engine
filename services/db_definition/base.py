@@ -21,7 +21,6 @@ def init_db(settings: DBSettings, drop_database: bool = False):
     """
     Will init the database object in order to be used
     """
-    print(settings)
     database.bind(
         provider='postgres',
         user=settings.username,
