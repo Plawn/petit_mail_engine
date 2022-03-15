@@ -13,5 +13,5 @@ class Recipient(database.Entity):
     
     """The email of the recipient
     """
-    email = Required(str)
+    email: str = Required(str)
     emails = Set('Email', reverse="recipient")

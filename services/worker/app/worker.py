@@ -9,7 +9,7 @@ from pika.spec import Basic
 from services.db_definition.sender import Sender
 from services.worker.app.utils import load_context
 
-from ...db_definition import Content, Email, credentials, init_db
+from ...db_definition import Content, Email, credentials, init_db, db_session
 from ...queue_definition import QUEUE_NAME, get_channel
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
@@ -23,6 +23,7 @@ def make_callback(context: Context):
     senders_db = context.senders_db
     template_db = context.template_db
 
+    @db_session
     def callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes):
         logging.debug("[x] Received %r" % body)
         body = json.loads(body)
@@ -81,4 +82,5 @@ def start_worker(conf_file: str, profile: str):
         queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False
     )
     logging.info('started worker')
+    print('started worker')
     channel.start_consuming()

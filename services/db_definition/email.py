@@ -1,10 +1,14 @@
 import datetime
 import uuid
+from typing import TYPE_CHECKING, List
 
-from pony.orm.core import Optional, PrimaryKey, Required, Set
 from pony.orm import Set
+from pony.orm.core import Optional, PrimaryKey, Required, Set
+
 from .base import database
 
+if TYPE_CHECKING:
+    from .recipient import Recipient
 
 class Email(database.Entity):
     """Represents a given email sent to a set a recipient
@@ -34,7 +38,7 @@ class Email(database.Entity):
     
     """Set of recipient, whom'll receive the email
     """
-    recipient = Set('Recipient', reverse="emails")
+    recipient: List['Recipient'] = Set('Recipient', reverse="emails")
     
     """The actual content of the email
     """
