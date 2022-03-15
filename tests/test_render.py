@@ -1,6 +1,6 @@
 import requests
 
-url = 'http://localhost:8000'
+# url = 'http://localhost:5000'
 
 url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
 

@@ -29,13 +29,22 @@ def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
 def push_mails_to_queue(emails: List[Email]) -> None:
     # TODO:
     # documentation
+    # TODO: not pretty
+    global channel
+    failed = []
     for email in emails:
-        channel.basic_publish(
-            exchange='', routing_key=QUEUE_NAME,
-            body=json.dumps({
-                'id': email.id
-            })
-        )
+        try :
+            channel.basic_publish(
+                exchange='', routing_key=QUEUE_NAME,
+                body=json.dumps({
+                    'id': email.id
+                })
+            )
+            failed.append(email)
+        except:
+            channel = get_channel(False)
+            failed.append(email)
+    push_mails_to_queue(failed)
 
 
 def get_identities_for_emails(identity: Identity, addresses: List[List[str]]) -> List[Sender]:
