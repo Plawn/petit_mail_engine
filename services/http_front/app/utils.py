@@ -43,7 +43,8 @@ def push_mails_to_queue(emails: List[Email]) -> None:
         except:
             channel = get_channel(False)
             failed.append(email)
-    push_mails_to_queue(failed)
+    if len(failed) > 0:
+        push_mails_to_queue(failed)
 
 
 def get_identities_for_emails(identity: Identity, addresses: List[List[str]]) -> List[Sender]:
