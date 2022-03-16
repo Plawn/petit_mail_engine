@@ -40,7 +40,6 @@ def push_mails_to_queue(emails: List[Email]) -> None:
                     'id': email.id
                 })
             )
-            failed.append(email)
         except:
             channel = get_channel(False)
             failed.append(email)
