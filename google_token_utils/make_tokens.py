@@ -6,12 +6,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import json
 
 Message = dict
 
+drive_scopes = ["https://www.googleapis.com/auth/drive.metadata.readonly", "https://www.googleapis.com/auth/drive"]
+gmail_scopes = ['https://www.googleapis.com/auth/gmail.send']
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+SCOPES = drive_scopes
 FILENAME = 'credentials.json'
 
 
@@ -25,6 +28,8 @@ def main():
     print('client id :', creds.client_id)
     print('client secret :', creds.client_secret)
     print('refresh token :', creds.refresh_token)
+    with open('auth.json', 'w') as f:
+        f.write(creds.to_json())
 
 if __name__ == '__main__':
     main()
