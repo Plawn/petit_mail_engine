@@ -1,32 +1,32 @@
 import os
 
-import pika
 import yaml
-from pika.adapters.blocking_connection import BlockingChannel
+from kafka import KafkaConsumer, KafkaProducer
 
 QUEUE_NAME = 'mail_queue'
 
-def get_channel(passive: bool) -> BlockingChannel:
-    # TODO: not optimal but good enough
-    with open(os.environ.get('CONF_FILE', "conf.yaml"), 'r') as f :
-        conf = yaml.safe_load(f)['queue']
+def get_consumer() -> KafkaConsumer:
+    # TODO: make pretty
+    conf = get_conf()
     
     rabbitHost = conf['host']
     rabbit_user = conf['user']
     rabbit_password = conf['password']
     
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(
-            host=rabbitHost,
-            credentials=pika.PlainCredentials(
-                username=rabbit_user,
-                password=rabbit_password,
-            )
-        )
-    )
+    consumer = KafkaConsumer('my_favorite_topic')
+    
+    return consumer
 
-    channel = connection.channel()
+def get_conf():
+    # TODO: not optimal but good enough
+    with open(os.environ.get('CONF_FILE', "conf.yaml"), 'r') as f :
+        conf = yaml.safe_load(f)['queue']
+    return conf
 
-    channel.queue_declare(queue=QUEUE_NAME, passive=passive)
-
-    return channel
+def get_producer() -> KafkaProducer: 
+    # TODO: make pretty
+    conf = get_conf()
+    producer = KafkaProducer('my_favorite_topic')
+    
+    
+    return producer

@@ -5,9 +5,9 @@ from typing import List, Tuple
 
 from ...db_definition import (Content, Email, Identity, Recipient, Sender,
                               database)
-from ...queue_definition import QUEUE_NAME, get_channel
+from ...queue_definition import QUEUE_NAME, get_producer
 
-channel = get_channel(False)
+channel = get_producer()
 
 
 def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
@@ -27,24 +27,14 @@ def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
 
 
 def push_mails_to_queue(emails: List[Email]) -> None:
-    # TODO:
-    # documentation
-    # TODO: not pretty
-    global channel
-    failed = []
     for email in emails:
-        try :
-            channel.basic_publish(
-                exchange='', routing_key=QUEUE_NAME,
-                body=json.dumps({
-                    'id': email.id
-                })
-            )
-        except:
-            channel = get_channel(False)
-            failed.append(email)
-    if len(failed) > 0:
-        push_mails_to_queue(failed)
+        channel.send(
+            topic=QUEUE_NAME,
+            value=json.dumps({
+                'id': email.id
+            }),
+        )
+
 
 
 def get_identities_for_emails(identity: Identity, addresses: List[List[str]]) -> List[Sender]:
