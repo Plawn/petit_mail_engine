@@ -30,6 +30,9 @@ class MinioTemplateDB(TemplateDB):
 
     def init(self):
         NAME = 'temp.html'
+        buckets = self.minio_instance.list_buckets()
+        print("buckets", buckets)
+        self.logger.info(f"buckets: {buckets}")
         filenames = (
             obj.object_name for obj in self.minio_instance.list_objects(self.bucket_name, recursive=True)
         )
