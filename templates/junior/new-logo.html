@@ -1,5 +1,5 @@
 <subject>
-    Nouveau logo | {{junior.name}}
+    Nouveau logo | {{junior.name}}
 </subject>
 
 
@@ -8,16 +8,13 @@
     <body>
         {% from "common/centered_button.html" import centered_button %} 
         {% from "common/card.html" import card %} 
-        {% call card("Nouveau logo") %}
-        Bonjour, {{user or ""}}
-
-
-        La junior {{junior.name}} demande a changer de logo
+        {% call card("Nouveau logo") %} 
         
+        Bonjour, {{user or ""}} La junior {{junior.name}} demande a changer de logo
+
         <br /> {{ centered_button("Kiwi", "https://example.com") }}
 
-        <br> Yo Friend, the Kiwi 
-        {% endcall %}
+        <br> Yo Friend, the Kiwi {% endcall %}
 
     </body>
 
