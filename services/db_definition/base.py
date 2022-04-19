@@ -5,6 +5,7 @@ from pony.orm import Database, db_session
 
 database = Database()
 
+bound_db = False
 
 @dataclass
 class DBSettings:
@@ -21,6 +22,8 @@ def init_db(settings: DBSettings, drop_database: bool = False):
     """
     Will init the database object in order to be used
     """
+    if bound_db:
+        return
     database.bind(
         provider='postgres',
         user=settings.username,
@@ -28,6 +31,7 @@ def init_db(settings: DBSettings, drop_database: bool = False):
         host=settings.host,
         database=settings.database
     )
+    bound_db = True
 
     if drop_database:
         database.generate_mapping(check_tables=False)

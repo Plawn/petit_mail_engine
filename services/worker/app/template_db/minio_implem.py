@@ -20,8 +20,6 @@ class MinioTemplateDB(TemplateDB):
     def __init__(self, minio_creds: MinioInfos, logger: Optional[logging.Logger] = None):
         super().__init__(minio_creds, logger=logger)
         self.bucket_name = minio_creds.bucket_name
-        print(minio_creds)
-        self.logger.info(minio_creds)
         self.minio_instance = minio.Minio(
             minio_creds.host, minio_creds.accesskey, minio_creds.passkey
         )
