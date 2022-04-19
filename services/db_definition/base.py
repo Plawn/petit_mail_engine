@@ -22,6 +22,7 @@ def init_db(settings: DBSettings, drop_database: bool = False):
     """
     Will init the database object in order to be used
     """
+    global bound_db
     if bound_db:
         return
     database.bind(
