@@ -14,8 +14,9 @@ from .interface import Email, EmailSender
 @dataclass
 class SMTPCreds:
     email: str
-    password: str
     server: str
+    password: str
+    username: str
     server_port: int
 
 
@@ -30,7 +31,7 @@ class SMTPMailHandler(EmailSender[SMTPCreds]):
         self.email = creds.email
         self.creds = creds
         self.session: Optional[smtplib.SMTP] = None
-        self.lock = threading.RLock()
+        self.lock = threading.Lock()
         self.logged: bool = False
         self.__login()
 
@@ -58,7 +59,7 @@ class SMTPMailHandler(EmailSender[SMTPCreds]):
                     self.creds.server, self.creds.server_port)
                 self.session.ehlo()
                 self.session.starttls()
-                self.session.login(self.creds.email, self.creds.password)
+                self.session.login(self.creds.username, self.creds.password)
                 self.logged = True
                 logging.debug(f'Successfully logged into {self.creds.email}')
 

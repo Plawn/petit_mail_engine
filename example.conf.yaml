@@ -1,7 +1,6 @@
 
 creds:
-  # creds to use phoenix@juniorisep.com
-  kiwi-auth@cnje.org:
+  name:
       email: <>
       type: gmail
       refresh_token: <>
