@@ -1,8 +1,8 @@
 import requests
 
-# url = 'http://localhost:5000'
+url = 'http://localhost:5000'
 
-url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
+# url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
 
 # addresses: List[List[str]]
 #     content: str = ''
@@ -23,11 +23,11 @@ data = {
         ['paul.leveau@gmail.com', 'plawn.yay@gmail.com'],
     ],
     "subject": "test2",
-    "from": "Kiwi Auth",
+    "from": "Kiwi Notification",
     "template_name": "junior/new-logo",
     "base_data": {
         "junior": {
-            "name": "JISEP"
+            "name": "CNJE"
         }
     },
     "data": {
