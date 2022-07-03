@@ -1,8 +1,8 @@
 import requests
 
-# url = 'http://localhost:5000'
+url = 'http://localhost:5000'
 
-url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
+# url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
 
 # addresses: List[List[str]]
 #     content: str = ''
@@ -17,12 +17,21 @@ url = "https://dev.kiwix.gamma.junior-entreprises.com/mail"
 
 #     data: Dict[str, Any] = {}
 
+
+# class NotificationFragment(BaseModel):
+#     body: Optional[Dict[str, Any]]
+#     type: str
+#     to: List[str]
+
+
+# class SendTemplateMailBody(BaseModel):
+#     # from: str
+#     template_name: str
+#     fragments: List[NotificationFragment]
+#     base_data: Dict[str, Any]
+
+
 data = {
-    "addresses": [
-        ['paul.leveau@cnje.org'],
-        ['paul.leveau@gmail.com', 'plawn.yay@gmail.com'],
-    ],
-    "subject": "test2",
     "from": "Kiwi Auth",
     "template_name": "junior/new-logo",
     "base_data": {
@@ -30,16 +39,28 @@ data = {
             "name": "JISEP"
         }
     },
-    "data": {
-        # "0": {
-        #     "user": "Paul"
-        # },
-        "1": {
-            "user": "Jeb"
+    "fragments": [
+        {
+            "to": ["paul.leveau@gmail.com"],
+            "type": "email",
+            "body": {
+                "junior": {"name": "beb"},
+                "user": "Paul",
+            },
+        },
+        {
+            "to": ["paul.leveau@cnje.org"],
+            "type": "email",
+            "body": {
+                "junior_name": "JISEP",
+                "user": "Jack",
+            },
         }
-    }
+    ]
+
 }
 
 r = requests.post(url + "/send/kiwi/html", json=data)
 
 print(r.status_code)
+print(r.text)

@@ -27,33 +27,33 @@ services:
     ports:
       - "5432:5432"
 
-  worker:
-    # image: <>
-    build: 
-      dockerfile: ./Dockerfile.worker
-      context: .
-    environment: 
-      - CONF_FILE=conf.yaml
-    volumes: 
-      - ./conf.yaml:/api/conf.yaml
-    restart: unless-stopped
-    depends_on:
-      - rabbitmq
-      - database
+  # worker:
+  #   # image: <>
+  #   build: 
+  #     dockerfile: ./Dockerfile.worker
+  #     context: .
+  #   environment: 
+  #     - CONF_FILE=conf.yaml
+  #   volumes: 
+  #     - ./conf.yaml:/api/conf.yaml
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - rabbitmq
+  #     - database
 
-  front:
-    # image: <>
-    build: 
-      dockerfile: ./Dockerfile.http_front
-      context: .
-    environment: 
-      - CONF_FILE=conf.yaml
-    ports :
-      - "5000:5000"
-    volumes: 
-      - ./conf.yaml:/api/conf.yaml
-    restart: unless-stopped
-    depends_on:
-      - rabbitmq
-      - worker
-      - database
+  # front:
+  #   # image: <>
+  #   build: 
+  #     dockerfile: ./Dockerfile.http_front
+  #     context: .
+  #   environment: 
+  #     - CONF_FILE=conf.yaml
+  #   ports :
+  #     - "5000:5000"
+  #   volumes: 
+  #     - ./conf.yaml:/api/conf.yaml
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - rabbitmq
+  #     - worker
+  #     - database

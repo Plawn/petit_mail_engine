@@ -17,14 +17,15 @@ def send_mail_html(identity: str, body: SendTemplateMailBody):
         template_name=body.template_name,
         data=body.base_data
     )
-    if body.data is not None and len(body.data) > 0:    
+    content = None
+    if body.fragments is not None and len(body.fragments) > 0:    
         # means that we have the same amount of data as email to render
         content = []
         default_content = Content(base_content=base_content)
         used_default = False
-        for key in range(len(body.addresses)):
+        for fragment in body.fragments:
             # we have a json object here so even number keys are strings
-            d = body.data.get(str(key))
+            d = fragment.body
             if d is not None:
                 content.append(Content(base_content=base_content, data=d))
             else:
@@ -37,7 +38,7 @@ def send_mail_html(identity: str, body: SendTemplateMailBody):
     else:
         # reuse the exact same data for every render
         content = itertools.cycle([Content(base_content=base_content)])
-    utils.send_mail(identity, content, body.from_, body.addresses)
+    utils.send_mail(identity, content, body.from_, [f.to for f in body.fragments])
 
 
 @router.post('/{identity}/plain')

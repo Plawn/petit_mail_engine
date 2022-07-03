@@ -1,7 +1,7 @@
 import logging
 from services.worker.app.senders.SMTP_implem import SMTPMailHandler
 from typing import Dict, Type
-
+import copy
 import yaml
 
 from ...db_definition import Content
@@ -69,8 +69,8 @@ def merge_data(content: Content) -> dict:
 
     /!\ Overrides the base_content data with the data if keys are the same 
     """
-    b = content.base_content.data or {}
-    s = content.data or {}
+    b = copy.deepcopy(content.base_content.data or {})
+    s = copy.deepcopy(content.data or {})
     # merge data
     for k, v in s.items():
         b[k] = v
