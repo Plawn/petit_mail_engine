@@ -27,9 +27,9 @@ def make_callback(context: Context):
     @db_session
     def callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes):
         logging.debug("[x] Received %r" % body)
-        body = json.loads(body)
+        parsed_body = json.loads(body)
         try:
-            email = Email[body['id']]
+            email = Email[parsed_body['id']]
             content_entity: Content = email.content
             sender: Sender = email.sender
             sender_ = senders_db[sender.email]
