@@ -1,19 +1,13 @@
 import logging
+import shutil
 from dataclasses import dataclass
 from typing import Any, Optional
-from uuid import uuid4
+import uuid
+
 import pygit2
 
 from . import utils
 from .interface import TemplateDB
-
-
-class LoginCallback(pygit2.RemoteCallbacks):
-    def __init__(self, credentials=None, certificate=None):
-        super().__init__(credentials, certificate)
-
-    def transfer_progress(self, stats: pygit2.remote.TransferProgress):
-        print(f'{stats.indexed_objects}/{stats.total_objects}')
 
 
 @dataclass
@@ -26,8 +20,9 @@ class GitForm:
 class GITImplem(TemplateDB):
     def __init__(self, infos: GitForm, logger: Optional[logging.Logger] = None):
         super().__init__(infos, logger)
+        self._pulled = False
         self.form = infos
-        self.__uuid = uuid4()
+        self.__uuid = uuid.uuid4().hex
         self.folder = self.__uuid
 
     @staticmethod
@@ -39,39 +34,25 @@ class GITImplem(TemplateDB):
         pygit2.clone_repository(
             self.form.url,
             self.__uuid,
-            callbacks=LoginCallback(pygit2.UserPass(self.form.username, self.form.password))
+            callbacks=pygit2.RemoteCallbacks(pygit2.UserPass(
+                self.form.username, self.form.password))
         )
-        # copy in memory
-        # delete
-        # after init
         self._pulled = True
 
     def init(self):
         self.__pull()
-        for full_path in utils.iterate_over_folder(self.folder):
+        for full_path in utils.iterate_over_folder(self.folder, ['html']):
             try:
                 filename = full_path.replace(self.folder + '/', '')
                 with open(full_path, 'r') as f:
                     self.logger.info(f'opening {filename}')
                     self.add_template_from_text(
-                        filename, f.read(), filename.startswith('common')
+                        filename, f.read(), is_common=utils.is_common_template(filename)
                     )
                     self.logger.info(f'opened {filename}')
             except:
                 import traceback
                 traceback.print_exc()
                 self.logger.error(f'failed {full_path}')
-        # TODO: remove full folder
-
-
-# class MinioTemplateDB(TemplateDB):
-#     def __init__(self, minio_creds: MinioInfos, logger: Optional[logging.Logger] = None):
-#         super().__init__(minio_creds, logger=logger)
-#         self.bucket_name = minio_creds.bucket_name
-#         self.minio_instance = minio.Minio(
-#             minio_creds.host, minio_creds.accesskey, minio_creds.passkey
-#         )
-
-#     @staticmethod
-#     def get_creds_form() -> MinioInfos:
-#         return MinioInfos
+        # remove the folder now that required data is loaded
+        shutil.rmtree(self.folder)

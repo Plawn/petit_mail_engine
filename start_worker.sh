@@ -1,1 +1,1 @@
-python3 _start_worker.py
+TEMPLATE_PROVIDER=git python3 _start_worker.py
