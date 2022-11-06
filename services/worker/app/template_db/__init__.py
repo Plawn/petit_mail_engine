@@ -1,5 +1,6 @@
 from typing import Dict, Type
 
+from .git_implem import GITImplem
 from .interface import TemplateData, TemplateDB
 from .local_implem import LocalTemplateDB
 from .minio_implem import MinioInfos, MinioTemplateDB
@@ -7,6 +8,7 @@ from .minio_implem import MinioInfos, MinioTemplateDB
 engines: Dict[str, Type[TemplateDB]] = {
     's3': MinioTemplateDB,
     'local': LocalTemplateDB,
+    'git': GITImplem,
 }
 
 

@@ -72,12 +72,15 @@ def make_callback(context: Context):
 def start_worker(conf_file: str, profile: str):
     """Starts a worker with the given configuration
     """
-    init_db(credentials)
-    channel = get_channel(passive=False)
+    
     context = load_context(conf_file, profile)
-
     context.template_db.bind_render_functions(BasicRenderFunctions())
     context.template_db.init()
+    logging.info("Loaded context")
+    init_db(credentials)
+    channel = get_channel(passive=False)
+
+    
     callback = make_callback(context)
     channel.basic_consume(
         queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False

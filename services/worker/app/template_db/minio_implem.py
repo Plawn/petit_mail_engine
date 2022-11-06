@@ -1,11 +1,11 @@
+import io
 import logging
-import os
 from dataclasses import dataclass
 from typing import Optional
 
 import minio
 
-from .interface import TemplateData, TemplateDB
+from .interface import TemplateDB
 
 
 @dataclass
@@ -29,26 +29,21 @@ class MinioTemplateDB(TemplateDB):
         return MinioInfos
 
     def init(self):
-        NAME = 'temp.html'
         buckets = self.minio_instance.list_buckets()
-        print("buckets", buckets)
         self.logger.info(f"buckets: {buckets}")
         filenames = (
             obj.object_name for obj in self.minio_instance.list_objects(self.bucket_name, recursive=True)
         )
         for filename in filenames:
             self.logger.info(f'pulling {filename}')
-            doc = self.minio_instance.get_object(
+            handle = self.minio_instance.get_object(
                 self.bucket_name, filename)
-            # kinda ugly i have to admit
-            with open(NAME, 'wb') as file_data:
-                for d in doc.stream(32 * 1024):
-                    file_data.write(d)
-
-            with open(NAME, 'r') as f:
-                self.add_template_from_text(
-                    filename, f.read(), filename.startswith('common')
-                )
+            buf = io.BytesIO()
+            for d in handle.stream(32 * 1024):
+                buf.write(d)
+            buf.seek(0)
+            is_common = filename.startswith('common')
+            self.add_template_from_text(
+                filename, buf.read(), is_common
+            )
             self.logger.info(f'Pulled {filename}')
-
-        os.remove(NAME)
