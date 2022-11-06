@@ -9,7 +9,21 @@ from ...queue_definition import QUEUE_NAME, get_channel
 
 channel = get_channel(False)
 
+def get_one_recipient(email: str):
+  try:
+    return Recipient.get(email=email) or Recipient(email=email)
+  except Exception as e:
+    print(e)
+    return None
 
+def get_recipients_stage_one(email_list: List[str]):
+  res = []
+  for email in email_list:
+    r = get_one_recipient(email)
+    if r is not None:
+      res.append(r)
+  return res
+ 
 def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
     # TODO:
     # documentation
@@ -17,11 +31,7 @@ def get_recipients_from_emails(emails: List[List[str]]) -> List[Recipient]:
     # create recipient entity for each not existing
     # TODO: optimize
     res = [
-        [
-            Recipient.get(email=email) or Recipient(email=email)
-            for email in email_list
-        ]
-        for email_list in emails
+        get_recipients_stage_one(email_list) for email_list in emails
     ]
     return res
 
