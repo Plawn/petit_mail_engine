@@ -77,9 +77,6 @@ def start_worker(conf_file: str, profile: str):
     context.template_db.bind_render_functions(BasicRenderFunctions())
     context.template_db.init()
     logging.info("Loaded context")
-    print(context.template_db.templates)
-    import time
-    time.sleep(100)
     init_db(credentials)
     channel = get_channel(passive=False)
 
