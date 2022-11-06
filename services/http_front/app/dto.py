@@ -16,9 +16,21 @@ class SendPlainMailBody(BaseSendMailBody):
     subject: str
 
 
-class SendTemplateMailBody(BaseSendMailBody):
+class NotificationFragment(BaseModel):
+    body: Optional[Dict[str, Any]]
+    type: str
+    to: List[str]
+
+class SendTemplateMailBody(BaseModel):
+    from_: str
+
+    class Config:
+        fields = {
+            'from_': 'from'
+        }
+
     template_name: str
-    data: Optional[Dict[str, Any]]
+    fragments: List[NotificationFragment]
     base_data: Dict[str, Any]
 
 

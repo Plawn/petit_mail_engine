@@ -17,6 +17,20 @@ url = 'http://localhost:5000'
 
 #     data: Dict[str, Any] = {}
 
+
+# class NotificationFragment(BaseModel):
+#     body: Optional[Dict[str, Any]]
+#     type: str
+#     to: List[str]
+
+
+# class SendTemplateMailBody(BaseModel):
+#     # from: str
+#     template_name: str
+#     fragments: List[NotificationFragment]
+#     base_data: Dict[str, Any]
+
+
 data = {
     "addresses": [
         ['paul.leveau@cnje.org'],
@@ -30,16 +44,28 @@ data = {
             "name": "CNJE"
         }
     },
-    "data": {
-        # "0": {
-        #     "user": "Paul"
-        # },
-        "1": {
-            "user": "Jeb"
+    "fragments": [
+        {
+            "to": ["paul.leveau@gmail.com"],
+            "type": "email",
+            "body": {
+                "junior": {"name": "beb"},
+                "user": "Paul",
+            },
+        },
+        {
+            "to": ["paul.leveau@cnje.org"],
+            "type": "email",
+            "body": {
+                "junior_name": "JISEP",
+                "user": "Jack",
+            },
         }
-    }
+    ]
+
 }
 
 r = requests.post(url + "/send/kiwi/html", json=data)
 
 print(r.status_code)
+print(r.text)
