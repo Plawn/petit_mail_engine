@@ -32,11 +32,16 @@ url = 'http://localhost:5000'
 
 
 data = {
-    "from": "Kiwi Auth",
+    "addresses": [
+        ['paul.leveau@cnje.org'],
+        ['paul.leveau@gmail.com', 'plawn.yay@gmail.com'],
+    ],
+    "subject": "test2",
+    "from": "Kiwi Notification",
     "template_name": "junior/new-logo",
     "base_data": {
         "junior": {
-            "name": "JISEP"
+            "name": "CNJE"
         }
     },
     "fragments": [

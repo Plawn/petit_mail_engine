@@ -61,7 +61,7 @@ class SMTPMailHandler(EmailSender[SMTPCreds]):
                 self.session.starttls()
                 self.session.login(self.creds.username, self.creds.password)
                 self.logged = True
-                logging.debug(f'Successfully logged into {self.creds.email}')
+                logging.info(f'Successfully logged into {self.creds.email}')
 
     def __send_mail(self, adresses: List[str], msg: MIMEMultipart) -> None:
         done = False
