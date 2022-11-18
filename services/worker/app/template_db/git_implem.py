@@ -1,13 +1,12 @@
 import logging
 import shutil
-from dataclasses import dataclass
-from typing import Any, Optional
 import uuid
+from dataclasses import dataclass
+from typing import Optional
 
 import pygit2
 
-from . import utils
-from .interface import TemplateDB
+from .local_implem import LocalInfos, LocalTemplateDB
 
 
 @dataclass
@@ -17,13 +16,14 @@ class GitForm:
     password: str
 
 
-class GITImplem(TemplateDB):
+class GITImplem(LocalTemplateDB):
     def __init__(self, infos: GitForm, logger: Optional[logging.Logger] = None):
-        super().__init__(infos, logger)
+        self.__uuid = uuid.uuid4().hex
+        self.temp_folder = self.__uuid
+        local_infos = LocalInfos(self.__uuid)
+        super().__init__(local_infos, logger)
         self._pulled = False
         self.form = infos
-        self.__uuid = uuid.uuid4().hex
-        self.folder = self.__uuid
 
     @staticmethod
     def get_creds_form() -> GitForm:
@@ -41,18 +41,5 @@ class GITImplem(TemplateDB):
 
     def init(self):
         self.__pull()
-        for full_path in utils.iterate_over_folder(self.folder, ['html']):
-            try:
-                filename = full_path.replace(self.folder + '/', '')
-                with open(full_path, 'r') as f:
-                    self.logger.info(f'opening {filename}')
-                    self.add_template_from_text(
-                        filename, f.read(), is_common=utils.is_common_template(filename)
-                    )
-                    self.logger.info(f'opened {filename}')
-            except:
-                import traceback
-                traceback.print_exc()
-                self.logger.error(f'failed {full_path}')
-        # remove the folder now that required data is loaded
-        shutil.rmtree(self.folder)
+        super().init()
+        shutil.rmtree(self.temp_folder)

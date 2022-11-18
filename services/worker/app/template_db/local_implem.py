@@ -19,16 +19,17 @@ class LocalTemplateDB(TemplateDB):
         return LocalInfos
 
     def init(self):
-        for full_path in utils.iterate_over_folder(self.folder):
+        for full_path in utils.iterate_over_folder(self.folder, utils.make_file_filter(['html'])):
             try:
                 filename = full_path.replace(self.folder + '/', '')
                 with open(full_path, 'r') as f:
                     self.logger.info(f'opening {filename}')
                     self.add_template_from_text(
-                        filename, f.read(), filename.startswith('common')
+                        filename, f.read(), is_common=utils.is_common_template(filename)
                     )
                     self.logger.info(f'opened {filename}')
             except:
-                import traceback; traceback.print_exc();
+                import traceback
+                traceback.print_exc()
                 self.logger.error(f'failed {full_path}')
         return self

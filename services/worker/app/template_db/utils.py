@@ -2,8 +2,10 @@ import re
 from typing import List, Optional
 import os
 
+
 def is_common_template(filename: str) -> bool:
     return filename.startswith('common')
+
 
 def find_between(s: str, first: str, last: str):
     """Gives you the first thin between the two delimiters
@@ -15,16 +17,28 @@ def find_between(s: str, first: str, last: str):
     except ValueError:
         return "", 0
 
+
 def get_ext(filename: str) -> str:
     return filename.split('.')[-1]
 
-def iterate_over_folder(folder: str, only_ext: Optional[List[str]] = None):
+
+def item_filter_proto(dir_name: str, filename: str) -> bool:
+    ...
+
+
+def make_file_filter(extensions: List[str]):
+    def ext_file_filter(dir_name: str, filename: str) -> bool:
+        ext = get_ext(filename)
+        return ext in extensions
+    return ext_file_filter
+
+def iterate_over_folder(folder: str, file_filter: Optional[item_filter_proto] = None):
     """Walk into every folder and files
     """
-    if only_ext:
+    if file_filter:
         for dirpath, _, files in os.walk(folder):
             for filename in files:
-                if get_ext(filename) in only_ext:
+                if file_filter(dirpath, filename):
                     yield os.path.join(dirpath, filename)
                 else:
                     continue
@@ -32,6 +46,7 @@ def iterate_over_folder(folder: str, only_ext: Optional[List[str]] = None):
         for dirpath, _, files in os.walk(folder):
             for filename in files:
                 yield os.path.join(dirpath, filename)
+
 
 def extract_variable(var: str):
     """Will attempt to get every variable inside the given strings
