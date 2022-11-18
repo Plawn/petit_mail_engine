@@ -44,6 +44,6 @@ class MinioTemplateDB(TemplateDB):
             buf.seek(0)
             is_common = filename.startswith('common')
             self.add_template_from_text(
-                filename, buf.read(), is_common
+                filename, buf.read().decode('utf-8'), is_common
             )
             self.logger.info(f'Pulled {filename}')
