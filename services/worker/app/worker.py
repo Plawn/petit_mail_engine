@@ -23,15 +23,16 @@ def make_callback(context: Context):
     """
     senders_db = context.senders_db
     template_db = context.template_db
-
+    logging.info(senders_db.keys())
     @db_session
     def callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes):
-        logging.debug("[x] Received %r" % body)
+        logging.debug(f"[x] Received {body}")
         body = json.loads(body)
         try:
             email = Email[body['id']]
             content_entity: Content = email.content
             sender: Sender = email.sender
+
             sender_ = senders_db[sender.email]
             if content_entity.content is not None:
                 sender_.send_raw_mail(
