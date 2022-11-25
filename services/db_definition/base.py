@@ -30,7 +30,8 @@ def init_db(settings: DBSettings, drop_database: bool = False):
         user=settings.username,
         password=settings.password,
         host=settings.host,
-        database=settings.database
+        database=settings.database,
+        port=settings.port,
     )
     bound_db = True
 
