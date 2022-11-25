@@ -23,7 +23,7 @@ def make_callback(context: Context):
     """
     senders_db = context.senders_db
     template_db = context.template_db
-    logging.info(senders_db.keys())
+    logging.error(senders_db.keys())
     @db_session
     def callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes):
         logging.debug(f"[x] Received {body}")
