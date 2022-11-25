@@ -10,7 +10,7 @@ from retry import retry
 from services.db_definition.sender import Sender
 from services.worker.app.utils import load_context
 
-from ...db_definition import Content, Email, credentials, db_session, init_db
+from ...db_definition import Content, Email, credentials, db_session, init_db, minimal_settings
 from ...queue_definition import QUEUE_NAME, get_channel
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
@@ -77,7 +77,7 @@ def start_worker(conf_file: str, profile: str):
     context.template_db.bind_render_functions(BasicRenderFunctions())
     context.template_db.init()
     logging.info("Loaded context")
-    init_db(credentials)
+    init_db(credentials, minimal_settings)
     channel = get_channel(passive=False)
 
     

@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI, Response
 
-from ...db_definition import credentials, init_db
+from ...db_definition import credentials, init_db, minimal_settings
 from .server import router as send_router
 from .admin import router as admin_router
 
@@ -13,7 +13,7 @@ drop_database = False
 
 @app.on_event('startup')
 def init():
-    init_db(credentials, drop_database)
+    init_db(credentials, minimal_settings, drop_database)
 
 
 @app.get('/live')
