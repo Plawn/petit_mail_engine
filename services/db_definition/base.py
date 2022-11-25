@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 import yaml
 from pony.orm import Database, db_session
-from typing import Optional
+from typing import Optional, Tuple
 
 database = Database()
 
