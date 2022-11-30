@@ -22,8 +22,11 @@ class RabbitACK(QueueACK[Generic[T]]):
         self.channel = channel
         self.method = method
     
-    def ack(self) -> None:
-        self.channel.basic_ack(delivery_tag=self.method.delivery_tag)
+    def ack(self, state: bool) -> None:
+        if state:
+            self.channel.basic_ack(delivery_tag=self.method.delivery_tag)
+        else:
+            self.channel.basic_nack(delivery_tag=self.method.delivery_tag)
 
 class RabbitChannel(ChannelInterface[T]):
     def __init__(self, channel: BlockingChannel) -> None:

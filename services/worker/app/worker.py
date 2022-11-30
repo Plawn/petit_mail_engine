@@ -63,10 +63,10 @@ def make_callback(context: Context):
             email.sent_at = datetime.now()
             sender.pending -= len(email.recipient)
 
-            ack.ack()
+            ack.ack(True) # success
         except:
             logging.error(traceback.format_exc())
-
+            ack.ack(False) # failed
     return callback
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
