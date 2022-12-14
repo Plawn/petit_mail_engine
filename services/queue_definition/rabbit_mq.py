@@ -36,6 +36,7 @@ class RabbitACK(Generic[T], QueueACK[T]):
 
 class Monitor(threading.Thread):
     def __init__(self, channel: BlockingConnection, logger: Optional[logging.Logger] = None):
+        super().__init__(self)
         self.channel = channel
         self.stopped = False
         self.running = False
