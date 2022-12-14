@@ -84,7 +84,7 @@ class RabbitChannel(ChannelInterface[T]):
 
 class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def __init__(self, conf: RabbitMQConf) -> None:
-        super().__init__()
+        super().__init__(conf)
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=conf.host,
