@@ -43,7 +43,10 @@ class MinioTemplateDB(TemplateDB):
                 buf.write(d)
             buf.seek(0)
             is_common = filename.startswith('common')
-            self.add_template_from_text(
-                filename, buf.read().decode('utf-8'), is_common
-            )
-            self.logger.info(f'Pulled {filename}')
+            try :
+                self.add_template_from_text(
+                    filename, buf.read().decode('utf-8'), is_common
+                )
+                self.logger.info(f'Pulled {filename}')
+            except:
+                self.logger.error(f'Failed to read {filename}')
