@@ -81,7 +81,7 @@ class RabbitChannel(ChannelInterface[T]):
         self.channel.stop_consuming()
 
     def ensure_ready(self) -> None:
-        if not self.connection.did_init():
+        if not self.connection.is_opened():
             raise Exception(
                 'Not opened, call init() on the connection or open() on the channel before use')
 
