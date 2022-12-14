@@ -26,7 +26,7 @@ def make_callback(context: Context):
     # logging.error(senders_db.keys())
     @db_session
     def callback(raw_body: str, ack: QueueACK[str]):
-        logging.debug(f"[x] Received {body}")
+        logging.debug(f"[x] Received {raw_body}")
         body = json.loads(raw_body)
         try:
             email = Email[body['id']]
