@@ -36,7 +36,7 @@ class RabbitACK(Generic[T], QueueACK[T]):
 
 class Monitor(threading.Thread):
     def __init__(self, channel: BlockingConnection, logger: Optional[logging.Logger] = None):
-        super().__init__(self)
+        threading.Thread.__init__(self)
         self.channel = channel
         self.stopped = False
         self.running = False
@@ -70,7 +70,7 @@ class RabbitChannel(ChannelInterface[T]):
             name, on_message_callback=wrapped_callback, auto_ack=False)
 
     def start(self):
-        self.connection._ensure_started()
+        self.open()
         self.channel.start_consuming()
 
     def stop(self):
@@ -79,9 +79,12 @@ class RabbitChannel(ChannelInterface[T]):
     def publish(self, name: str, data: T):
         self.channel.basic_publish(exchange='', routing_key=name, body=data)
 
+    def open(self):
+        self.connection.init()
 
 class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def __init__(self, conf: RabbitMQConf) -> None:
+        super().__init__()
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=conf.host,
@@ -93,6 +96,10 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
             )
         )
         self.monitor = Monitor(self.connection)
+
+    def init(self):
+        self._ensure_started()
+        self.did_init = True
 
     def _ensure_started(self):
         if not self.monitor.running:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod, abstractstaticmethod
-from typing import Generic, List, TypeVar, Protocol, Callable, Type
+from typing import Generic, List, TypeVar, Protocol, Callable, Type, Any
 
 T = TypeVar('T')
 BODY = TypeVar('BODY')
@@ -43,16 +43,23 @@ class ChannelInterface(ABC, Generic[BODY]):
     @abstractmethod
     def stop(self):
         ...
+    @abstractmethod
+    def open(self) -> ChannelInterface[BODY]:
+        ...
 
 class QueueInterface(ABC, Generic[T, BODY]):
     @abstractmethod
     def __init__(self, conf: T) -> None:
-        ...
+        self.did_init = False
 
     @abstractstaticmethod
     def get_configurer() -> Type[T]:
         ...
 
+    @abstractmethod
+    def init(self) -> QueueInterface[T, Body]:
+        ...
+        
     @abstractmethod
     def declare_queue(self, name: str, **kwargs) -> ChannelInterface[BODY]:
         ...
