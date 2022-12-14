@@ -47,7 +47,7 @@ class Monitor(threading.Thread):
         self.running = True
         self.logger.info("Monitor started")
         while not self.stopped:
-            self.logger.info("Monitor ensure events begin processed")
+            self.logger.info("Monitor ensure events being processed")
             self.channel.process_data_events()  # prevent timeout
             time.sleep(10)
         self.running = False
@@ -119,7 +119,7 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
             self.monitor.start()
 
     def is_opened(self):
-        return self.did_init()
+        return self.did_init
 
     def stop(self):
         self.monitor.stop()
