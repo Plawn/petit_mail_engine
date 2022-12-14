@@ -100,6 +100,7 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def init(self):
         self._ensure_started()
         self.did_init = True
+        return self
 
     def _ensure_started(self):
         if not self.monitor.running:
