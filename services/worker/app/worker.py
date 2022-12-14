@@ -79,10 +79,11 @@ def start_worker(conf_file: str, profile: str):
     context.template_db.init()
     logging.info("Loaded context")
     init_db(credentials, minimal_settings)
-    channel = get_channel(passive=False).open()
+    channel = get_channel(passive=False)
 
     callback = make_callback(context)
     channel.add_consumer(name=QUEUE_NAME, consumer=callback)
     logging.info('started worker')
     print('started worker')
+    channel.open()
     channel.start()

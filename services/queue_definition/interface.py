@@ -10,6 +10,7 @@ BODY = TypeVar('BODY')
 #     def __call__(self, body: BODY, ack: QueueACK[BODY]) -> None:
 #         ...
 
+
 class QueueACK(ABC, Generic[BODY]):
     @abstractmethod
     def __init__(self) -> None:
@@ -18,7 +19,7 @@ class QueueACK(ABC, Generic[BODY]):
     @abstractmethod
     def success(self) -> None:
         ...
-    
+
     @abstractmethod
     def failed(self, reason: str) -> None:
         ...
@@ -27,7 +28,7 @@ class QueueACK(ABC, Generic[BODY]):
 CallbackType = Callable[[T, QueueACK[T]], None]
 
 
-class ChannelInterface(ABC, Generic[BODY]):    
+class ChannelInterface(ABC, Generic[BODY]):
     @abstractmethod
     def add_consumer(self, name: str, consumer: CallbackType[BODY]) -> None:
         ...
@@ -43,9 +44,11 @@ class ChannelInterface(ABC, Generic[BODY]):
     @abstractmethod
     def stop(self):
         ...
+
     @abstractmethod
     def open(self) -> ChannelInterface[BODY]:
         ...
+
 
 class QueueInterface(ABC, Generic[T, BODY]):
     @abstractmethod
@@ -59,9 +62,7 @@ class QueueInterface(ABC, Generic[T, BODY]):
     @abstractmethod
     def init(self) -> QueueInterface[T, Body]:
         ...
-        
+
     @abstractmethod
     def declare_queue(self, name: str, **kwargs) -> ChannelInterface[BODY]:
         ...
-
-

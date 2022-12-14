@@ -43,15 +43,14 @@ class Monitor(threading.Thread):
         self.logger = logger or logging.getLogger()
         self.daemon = True
 
-
     def run(self):
         self.running = True
         self.logger.info("Monitor started")
         while not self.stopped:
             self.logger.info("Monitor ensure events begin processed")
-            self.channel.process_data_events() # prevent timeout
+            self.channel.process_data_events()  # prevent timeout
             time.sleep(10)
-        self.running =  False
+        self.running = False
 
     def is_running(self):
         return self.running
@@ -66,27 +65,34 @@ class RabbitChannel(ChannelInterface[T]):
         self.channel = channel
         self.connection = connection
 
-
     def add_consumer(self, name: str, consumer: CallbackType[T]) -> None:
-        def wrapped_callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes): # TODO: body type should be generic
+        # TODO: body type should be generic
+        def wrapped_callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: T):
             consumer(body, RabbitACK(ch, method))
 
         self.channel.basic_consume(
             name, on_message_callback=wrapped_callback, auto_ack=False)
 
     def start(self):
-        self.open()
+        self.ensure_ready()
         self.channel.start_consuming()
 
     def stop(self):
         self.channel.stop_consuming()
 
+    def ensure_ready(self) -> None:
+        if not self.connection.did_init():
+            raise Exception(
+                'Not opened, call init() on the connection or open() on the channel before use')
+
     def publish(self, name: str, data: T):
+        self.ensure_ready()
         self.channel.basic_publish(exchange='', routing_key=name, body=data)
 
     def open(self):
         self.connection.init()
         return self
+
 
 class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def __init__(self, conf: RabbitMQConf) -> None:
@@ -111,6 +117,9 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def _ensure_started(self):
         if not self.monitor.is_running():
             self.monitor.start()
+
+    def is_opened(self):
+        return self.did_init()
 
     def stop(self):
         self.monitor.stop()
