@@ -45,18 +45,18 @@ def push_mails_to_queue(emails: List[Email]) -> None:
     retries = 0
     to_send = [*emails]
     while len(to_send) > 0 and retries < 5:
-        for email in emails:
-            try:
-                channel.channel.basic_publish( # TODO: bad use but quick fix
-                    exchange='', routing_key=QUEUE_NAME,
-                    body=json.dumps({
-                        'id': email.id
-                    })
-                )
-            except Exception as e:
-                channel = get_channel(False)
-                logging.error(traceback.format_exc())
-                failed.append(email)
+        email = to_send.pop()
+        try:
+            channel.channel.basic_publish( # TODO: bad use but quick fix
+                exchange='', routing_key=QUEUE_NAME,
+                body=json.dumps({
+                    'id': email.id
+                })
+            )
+        except Exception as e:
+            channel = get_channel(False)
+            logging.error(traceback.format_exc())
+            failed.append(email)
     
 
 def get_identities_for_emails(identity: Identity, addresses: List[List[str]]) -> List[Sender]:
