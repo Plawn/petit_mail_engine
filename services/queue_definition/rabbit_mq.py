@@ -16,7 +16,7 @@ class RabbitMQConf:
     user: str
     password: str
     
-class RabbitACK(QueueACK[Generic[T]]):
+class RabbitACK(Generic[T], QueueACK[T]):
     
     def __init__(self, channel: BlockingChannel, method: Basic.Deliver) -> None:
         self.channel = channel
