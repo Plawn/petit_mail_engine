@@ -56,6 +56,10 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
                 )
             )
         )
+
+    @staticmethod
+    def get_configurer():
+        return RabbitMQConf
         
     def declare_queue(self, name: str, passive: bool) -> RabbitChannel[T]: 
         channel = self.connection.channel()

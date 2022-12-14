@@ -45,7 +45,7 @@ class QueueInterface(ABC, Generic[T, BODY]):
     def __init__(self, conf: T) -> None:
         ...
 
-    @abstractstaticmethod
+    @staticmethod
     def get_configurer() -> Type[T]:
         ...
 
