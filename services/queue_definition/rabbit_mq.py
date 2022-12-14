@@ -57,6 +57,7 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=conf.host,
+                heartbeat=30,
                 credentials=pika.PlainCredentials(
                     username=conf.user,
                     password=conf.password,
