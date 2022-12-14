@@ -4,14 +4,14 @@ import traceback
 from datetime import datetime
 
 import pika
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import Basic
 from retry import retry
+
 from services.db_definition.sender import Sender
 from services.worker.app.utils import load_context
 
-from ...db_definition import Content, Email, credentials, db_session, init_db, minimal_settings
-from ...queue_definition import QUEUE_NAME, get_channel
+from ...db_definition import (Content, Email, credentials, db_session, init_db,
+                              minimal_settings)
+from ...queue_definition import QUEUE_NAME, QueueACK, get_channel
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
 from .data_structure import Context
@@ -23,11 +23,11 @@ def make_callback(context: Context):
     """
     senders_db = context.senders_db
     template_db = context.template_db
-    logging.error(senders_db.keys())
+    # logging.error(senders_db.keys())
     @db_session
-    def callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: bytes):
+    def callback(raw_body: str, ack: QueueACK[str]):
         logging.debug(f"[x] Received {body}")
-        body = json.loads(body)
+        body = json.loads(raw_body)
         try:
             email = Email[body['id']]
             content_entity: Content = email.content
@@ -61,12 +61,12 @@ def make_callback(context: Context):
                 )
 
             email.sent_at = datetime.now()
-            sender.pending -= len(email.recipient)
+            sender.pending -= len(email.recipient) # error here -> should better handle concurrent update
 
-            ch.basic_ack(delivery_tag=method.delivery_tag)
+            ack.success()
         except:
             logging.error(traceback.format_exc())
-
+            ack.failed(traceback.format_exc())
     return callback
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
@@ -83,9 +83,7 @@ def start_worker(conf_file: str, profile: str):
 
     
     callback = make_callback(context)
-    channel.basic_consume(
-        queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False
-    )
+    channel.add_consumer(name=QUEUE_NAME, consumer=callback)
     logging.info('started worker')
     print('started worker')
-    channel.start_consuming()
+    channel.start()
