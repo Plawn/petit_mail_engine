@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractstaticmethod
 from typing import Generic, List, TypeVar, Protocol, Callable, Type
 
 T = TypeVar('T')
@@ -45,8 +45,7 @@ class QueueInterface(ABC, Generic[T, BODY]):
     def __init__(self, conf: T) -> None:
         ...
 
-    @abstractmethod
-    @staticmethod
+    @abstractstaticmethod
     def get_configurer() -> Type[T]:
         ...
 
