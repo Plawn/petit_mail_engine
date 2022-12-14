@@ -25,9 +25,9 @@ def make_callback(context: Context):
     template_db = context.template_db
     # logging.error(senders_db.keys())
     @db_session
-    def callback(body: str, ack: QueueACK[str]):
+    def callback(raw_body: str, ack: QueueACK[str]):
         logging.debug(f"[x] Received {body}")
-        body = json.loads(body)
+        body = json.loads(raw_body)
         try:
             email = Email[body['id']]
             content_entity: Content = email.content
@@ -61,12 +61,12 @@ def make_callback(context: Context):
                 )
 
             email.sent_at = datetime.now()
-            sender.pending -= len(email.recipient)
+            sender.pending -= len(email.recipient) # error here -> should better handle concurrent update
 
-            ack.ack(True) # success
+            ack.success()
         except:
             logging.error(traceback.format_exc())
-            ack.ack(False) # failed
+            ack.failed(traceback.format_exc())
     return callback
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))

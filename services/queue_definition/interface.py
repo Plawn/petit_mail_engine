@@ -16,7 +16,11 @@ class QueueACK(ABC, Generic[BODY]):
         ...
 
     @abstractmethod
-    def ack(self, state: bool) -> None:
+    def success(self) -> None:
+        ...
+    
+    @abstractmethod
+    def failed(self, reason: str) -> None:
         ...
 
 

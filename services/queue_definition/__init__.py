@@ -7,7 +7,7 @@ from pika.adapters.blocking_connection import BlockingChannel
 from .interface import ChannelInterface, QueueACK, QueueInterface
 from .rabbit_mq import RabbitACK, RabbitChannel, RabbitMQConf, RabbitMQImplem
 
-QUEUE_TYPE = str
+QUEUE_TYPE = dict
 QUEUE_NAME = 'mail_queue'
 
 default_implem = RabbitMQImplem
