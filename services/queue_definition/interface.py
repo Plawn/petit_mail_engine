@@ -33,6 +33,10 @@ class ChannelInterface(ABC, Generic[BODY]):
         ...
 
     @abstractmethod
+    def publish(self, name: str, data: BODY):
+        ...
+
+    @abstractmethod
     def start(self):
         ...
 
@@ -45,7 +49,7 @@ class QueueInterface(ABC, Generic[T, BODY]):
     def __init__(self, conf: T) -> None:
         ...
 
-    @staticmethod
+    @abstractstaticmethod
     def get_configurer() -> Type[T]:
         ...
 
