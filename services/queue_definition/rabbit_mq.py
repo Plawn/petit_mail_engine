@@ -7,7 +7,7 @@ import logging
 import pika
 from pika.adapters.blocking_connection import BlockingChannel, BlockingConnection
 from pika.spec import Basic
-
+import time
 from .interface import CallbackType, ChannelInterface, QueueACK, QueueInterface
 
 T = TypeVar('T')
@@ -41,7 +41,9 @@ class Monitor(threading.Thread):
         self.stopped = False
         self.running = False
         self.logger = logger or logging.getLogger()
-    
+        self.daemon = True
+
+
     def run(self):
         self.running = True
         self.logger.info("Monitor started")
@@ -50,6 +52,9 @@ class Monitor(threading.Thread):
             self.channel.process_data_events() # prevent timeout
             time.sleep(10)
         self.running =  False
+
+    def is_running(self):
+        return self.running
 
     def stop(self):
         self.stopped = True
@@ -81,6 +86,7 @@ class RabbitChannel(ChannelInterface[T]):
 
     def open(self):
         self.connection.init()
+        return self
 
 class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def __init__(self, conf: RabbitMQConf) -> None:
@@ -103,7 +109,7 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
         return self
 
     def _ensure_started(self):
-        if not self.monitor.running:
+        if not self.monitor.is_running():
             self.monitor.start()
 
     def stop(self):
