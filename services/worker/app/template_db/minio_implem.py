@@ -6,6 +6,7 @@ from typing import Optional
 import minio
 
 from .interface import TemplateDB
+from .utils import get_ext
 
 
 @dataclass
@@ -35,6 +36,8 @@ class MinioTemplateDB(TemplateDB):
             obj.object_name for obj in self.minio_instance.list_objects(self.bucket_name, recursive=True)
         )
         for filename in filenames:
+            if get_ext(filename) != "html": # only attempt to use html
+                continue
             self.logger.info(f'pulling {filename}')
             handle = self.minio_instance.get_object(
                 self.bucket_name, filename)
