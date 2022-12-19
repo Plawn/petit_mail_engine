@@ -11,7 +11,7 @@ from services.worker.app.utils import load_context
 
 from ...db_definition import (Content, Email, credentials, db_session, init_db,
                               minimal_settings)
-from ...queue_definition import QUEUE_NAME, QueueACK, get_channel
+from ...queue_definition import QUEUE_NAME, QueueACK, get_channel, configurer
 from . import utils
 from .basic_render_functions import BasicRenderFunctions
 from .data_structure import Context
@@ -79,11 +79,10 @@ def start_worker(conf_file: str, profile: str):
     context.template_db.init()
     logging.info("Loaded context")
     init_db(credentials, minimal_settings)
-    channel = get_channel(passive=False)
+    channel = get_channel(configurer, passive=False).open()
 
     callback = make_callback(context)
     channel.add_consumer(name=QUEUE_NAME, consumer=callback)
     logging.info('started worker')
     print('started worker')
-    channel.open()
     channel.start()

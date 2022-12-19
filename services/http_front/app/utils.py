@@ -6,9 +6,9 @@ import logging
 import traceback
 from ...db_definition import (Content, Email, Identity, Recipient, Sender,
                               database)
-from ...queue_definition import QUEUE_NAME, get_channel
+from ...queue_definition import QUEUE_NAME, get_channel, configurer
 
-channel = get_channel(False)
+channel = get_channel(configurer, False)
 
 def get_one_recipient(email: str):
   try:
