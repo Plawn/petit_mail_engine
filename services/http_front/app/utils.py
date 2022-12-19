@@ -49,7 +49,7 @@ def push_mails_to_queue(emails: List[Email]) -> None:
         try:
             channel.publish(QUEUE_NAME, json.dumps({'id': email.id}))
         except Exception as e:
-            channel = get_channel(False).open()
+            channel = get_channel(configurer, False).open()
             logging.error(traceback.format_exc())
             to_send.append(email)
     
