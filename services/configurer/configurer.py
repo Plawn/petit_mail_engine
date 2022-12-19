@@ -19,7 +19,7 @@ class Configurer(Generic[T], ABC):
 
     def ensure_inited(self) -> None:
         if not self.did_init:
-            self.__init()
+            self._init()
 
     def content(self) -> T:
         self.ensure_inited()
