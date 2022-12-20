@@ -10,5 +10,6 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 ENV CONF_FILE=conf.yaml
+ENV DISABLE_GIT=true
 
 ENTRYPOINT ["python3", "_start_worker.py"]
