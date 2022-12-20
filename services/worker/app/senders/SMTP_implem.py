@@ -69,8 +69,7 @@ class SMTPMailHandler(EmailSender[SMTPCreds]):
 
         while not done and retries < self.MAX_RETRIES:
             try:
-                self.session.sendmail(
-                    self.creds.email, adresses, msg.as_string())
+                self.session.sendmail(self.creds.email, adresses, msg.as_string())
                 done = True
             except:
                 self.logged = False

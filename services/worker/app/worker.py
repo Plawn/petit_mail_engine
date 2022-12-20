@@ -23,7 +23,7 @@ def make_callback(context: Context):
     """
     senders_db = context.senders_db
     template_db = context.template_db
-    # logging.error(senders_db.keys())
+
     @db_session
     def callback(raw_body: str, ack: QueueACK[str]):
         logging.debug(f"[x] Received {raw_body}")

@@ -4,7 +4,7 @@ import base64
 from dataclasses import dataclass
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import List, Type
+from typing import List, Type, Union
 
 import google.oauth2.credentials as Creds
 from googleapiclient.discovery import build
@@ -27,7 +27,7 @@ scopes = ['https://www.googleapis.com/auth/gmail.send']
 
 class GmailEmailSender(EmailSender[GmailCreds]):
     @staticmethod
-    def of(credentials:dict) -> Type[GmailEmailSender]:
+    def of(credentials: dict) -> Type[GmailEmailSender]:
         # print(GmailEmailSender(GmailCreds(**credentials)))
         return GmailEmailSender(GmailCreds(**credentials))
 
@@ -59,14 +59,14 @@ class GmailEmailSender(EmailSender[GmailCreds]):
         message['To'] = ','.join(email.addresses)
         self.__send_mail(message)
 
+    def _encode(self, message: Union[MIMEMultipart, MIMEText]) -> str:
+        return base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
+
     def __send_mail(self, message: str) -> None:
         (self.sender
          .users()
          .messages()
          .send(
              userId='me',
-             body={
-                 'raw': base64.urlsafe_b64encode(
-                    message.as_bytes()).decode("utf-8")
-             }
+             body={'raw': self._encode(message)}
          ).execute())
