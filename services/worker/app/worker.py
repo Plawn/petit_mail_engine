@@ -56,6 +56,7 @@ def make_callback(context: Context):
                     )
                 except KeyError:
                     logging.error(f"Template was not found: {template_name}")
+                    return
                 sender_.send_html_mail(
                     EmailObj(
                         email.from_,
