@@ -34,13 +34,15 @@ def make_callback(context: Context):
             sender: Sender = email.sender
 
             sender_ = senders_db[sender.email]
+            emails = [r.email for r in email.recipient]
+            logging.info(f"Sending to {emails}")
             if content_entity.content is not None:
                 sender_.send_raw_mail(
                     EmailObj(
                         email.from_,
                         content_entity.subject,
                         content_entity.content,
-                        [r.email for r in email.recipient]
+                        emails
                     )
                 )
             else:
@@ -48,15 +50,18 @@ def make_callback(context: Context):
                     content_entity.base_content.template_name
                 )
                 data = utils.merge_data(content_entity)
-                subject, content = template_db.render(
-                    template_name, data
-                )
+                try:
+                    subject, content = template_db.render(
+                        template_name, data
+                    )
+                except KeyError:
+                    logging.error(f"Template was not found: {template_name}")
                 sender_.send_html_mail(
                     EmailObj(
                         email.from_,
                         subject,
                         content,
-                        [r.email for r in email.recipient]
+                        emails
                     )
                 )
 
