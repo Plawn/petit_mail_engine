@@ -17,6 +17,7 @@ class PulsarConf:
     host: str
     port: str
 
+
 """
 client = pulsar.Client('pulsar://localhost:6650')
 
@@ -38,6 +39,7 @@ while True:
         consumer.negative_acknowledge(msg)
 """
 
+
 @dataclass
 class RabbitMQConf:
     host: str
@@ -45,6 +47,8 @@ class RabbitMQConf:
     password: str
 
 # OK
+
+
 class PulsarACK(Generic[T], QueueACK[T]):
 
     def __init__(self, consumer: Consumer, message: Message) -> None:
@@ -60,36 +64,37 @@ class PulsarACK(Generic[T], QueueACK[T]):
 
 
 class PulsarChannel(ChannelInterface[T]):
-    def __init__(self, connection: PulsarImplem, channel: Consumer) -> None:
+    def __init__(self, connection: PulsarImplem, name: str) -> None:
         self.connection = connection
-        self.channel = channel
-        
-    def add_consumer(self, name: str, consumer: CallbackType[T]) -> None:
-        # TODO: body type should be generic
-        def wrapped_callback(ch: Consumer, method: Basic.Deliver, properties: pika.BasicProperties, body: T):
-            consumer(body, PulsarACK(ch, method))
+        self.consumer = self.connection.get_consumer(topic, 'worker')
+        self.producer = self.connection.get_producer(topic)
+        self.running = False
+        self.consumers = []
 
-        self.channel.basic_consume(
-            name, on_message_callback=wrapped_callback, auto_ack=False)
+    def add_consumer(self, name: str, consumer: CallbackType[T]) -> None:
+        self.consumers.append(wrapped)
 
     def start(self):
-        while True:
-            msg = consumer.receive()
-            ex = msg.value()
+        self.running = True
+        while self.running:
             try:
-                print("Received message a={} b={} c={}".format(ex.a, ex.b, ex.c))
-                # Acknowledge successful processing of the message
-                consumer.acknowledge(msg)
-            except Exception:
-                # Message failed to be processed
-                consumer.negative_acknowledge(msg)
+                msg = self.consumer.receive(timeout_millis=1000)
+                body = msg.value()
+                for consumer in self.consumers:
+                    try:
+                        consumer(body, PulsarACK(self.consumer, msg))
+                    except Exception:
+                        # Message failed to be processed
+                        self.consumer.negative_acknowledge(msg)
+            except:
+                continue
+
 
     def stop(self):
-        self.channel.stop_consuming()
+        self.running = False
 
     def publish(self, name: str, data: T):
-        self.ensure_ready()
-        self.channel.basic_publish(exchange='', routing_key=name, body=data)
+        self.producer.send(data)
 
     def open(self):
         self.connection.init()
@@ -115,7 +120,11 @@ class PulsarImplem(Generic[T], QueueInterface[PulsarConf, T]):
     def get_configurer():
         return PulsarConf
 
+    def get_consumer(self, topic: str, subscription_name: str):
+        return self.connection.subscribe(topic, subscription_name)
+
+    def get_producer(self, topic: str):
+        return self.connection.create_producer(topic)
+
     def declare_queue(self, name: str, passive: bool) -> RabbitChannel[T]:
-        channel = self.connection.channel()
-        channel.queue_declare(queue=name, passive=passive)
-        return PulsarChannel(self, channel=channel)
+        return PulsarChannel(self, name)
