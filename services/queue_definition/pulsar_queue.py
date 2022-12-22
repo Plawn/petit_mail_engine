@@ -74,7 +74,7 @@ class PulsarChannel(ChannelInterface[T]):
                 for consumer in self.consumers:
                     try:
                         consumer(body, PulsarACK(self.consumer, msg))
-                    except Exception:
+                    except:
                         # Message failed to be processed
                         self.consumer.negative_acknowledge(msg)
             except:
