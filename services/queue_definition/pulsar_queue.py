@@ -39,16 +39,7 @@ while True:
         consumer.negative_acknowledge(msg)
 """
 
-
-@dataclass
-class RabbitMQConf:
-    host: str
-    user: str
-    password: str
-
 # OK
-
-
 class PulsarACK(Generic[T], QueueACK[T]):
 
     def __init__(self, consumer: Consumer, message: Message) -> None:
@@ -71,8 +62,8 @@ class PulsarChannel(ChannelInterface[T]):
         self.running = False
         self.consumers = []
 
-    def add_consumer(self, name: str, consumer: CallbackType[T]) -> None:
-        self.consumers.append(wrapped)
+    def add_consumer(self, consumer: CallbackType[T]) -> None:
+        self.consumers.append(consumer)
 
     def start(self):
         self.running = True
@@ -87,13 +78,13 @@ class PulsarChannel(ChannelInterface[T]):
                         # Message failed to be processed
                         self.consumer.negative_acknowledge(msg)
             except:
-                continue
+                pass
 
 
     def stop(self):
         self.running = False
 
-    def publish(self, name: str, data: T):
+    def publish(self, data: T):
         self.producer.send(data)
 
     def open(self):

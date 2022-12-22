@@ -61,17 +61,18 @@ class Monitor(threading.Thread):
 
 
 class RabbitChannel(ChannelInterface[T]):
-    def __init__(self, connection: RabbitMQImplem, channel: BlockingChannel) -> None:
+    def __init__(self, connection: RabbitMQImplem, name:str, channel: BlockingChannel) -> None:
         self.channel = channel
         self.connection = connection
+        self.name = name
 
-    def add_consumer(self, name: str, consumer: CallbackType[T]) -> None:
+    def add_consumer(self, consumer: CallbackType[T]) -> None:
         # TODO: body type should be generic
         def wrapped_callback(ch: BlockingChannel, method: Basic.Deliver, properties: pika.BasicProperties, body: T):
             consumer(body, RabbitACK(ch, method))
 
         self.channel.basic_consume(
-            name, on_message_callback=wrapped_callback, auto_ack=False)
+            self.name, on_message_callback=wrapped_callback, auto_ack=False)
 
     def start(self):
         self.ensure_ready()
@@ -131,4 +132,4 @@ class RabbitMQImplem(Generic[T], QueueInterface[RabbitMQConf, T]):
     def declare_queue(self, name: str, passive: bool) -> RabbitChannel[T]:
         channel = self.connection.channel()
         channel.queue_declare(queue=name, passive=passive)
-        return RabbitChannel(self, channel=channel)
+        return RabbitChannel(self, name, channel=channel)

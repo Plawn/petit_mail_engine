@@ -30,11 +30,11 @@ CallbackType = Callable[[T, QueueACK[T]], None]
 
 class ChannelInterface(ABC, Generic[BODY]):
     @abstractmethod
-    def add_consumer(self, name: str, consumer: CallbackType[BODY]) -> None:
+    def add_consumer(self, consumer: CallbackType[BODY]) -> None:
         ...
 
     @abstractmethod
-    def publish(self, name: str, data: BODY):
+    def publish(self, data: BODY):
         ...
 
     @abstractmethod

@@ -47,7 +47,7 @@ def push_mails_to_queue(emails: List[Email]) -> None:
     while len(to_send) > 0 and retries < 5:
         email = to_send.pop()
         try:
-            channel.publish(QUEUE_NAME, json.dumps({'id': email.id}))
+            channel.publish(json.dumps({'id': email.id}))
         except Exception as e:
             channel = get_channel(configurer, False).open()
             logging.error(traceback.format_exc())
