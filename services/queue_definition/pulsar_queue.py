@@ -70,7 +70,7 @@ class PulsarChannel(ChannelInterface[T]):
         while self.running:
             try:
                 msg = self.consumer.receive(timeout_millis=1000)
-                body = msg.value()
+                body = msg.data()
                 for consumer in self.consumers:
                     try:
                         consumer(body, PulsarACK(self.consumer, msg))
