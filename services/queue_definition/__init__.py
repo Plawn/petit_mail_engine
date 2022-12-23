@@ -31,7 +31,7 @@ configurer = YamlConfigurer[Conf](os.environ.get('CONF_FILE', "conf.yaml"))
 
 def get_channel(configurer: Configurer[Conf], passive: bool) -> ChannelInterface[QUEUE_TYPE]:
     conf = configurer.content().queue
-    implem = get_implem(queue.implem)
+    implem = get_implem(conf.implem)
     queue_configurer = implem.get_configurer()
     connection = implem(queue_configurer(**conf.dict()))
     channel = connection.declare_queue(QUEUE_NAME, passive=passive)
