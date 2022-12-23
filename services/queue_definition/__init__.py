@@ -1,5 +1,5 @@
 import os
-from typing import Type, Any
+from typing import Type, Any, Union
 
 import yaml
 from pika.adapters.blocking_connection import BlockingChannel
