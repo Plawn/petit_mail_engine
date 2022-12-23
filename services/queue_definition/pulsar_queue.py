@@ -5,7 +5,7 @@ import pulsar
 from dataclasses import dataclass
 from typing import Generic, TypeVar, Optional
 import logging
-
+from pydantic import BaseModel, Field
 import time
 from .interface import CallbackType, ChannelInterface, QueueACK, QueueInterface
 
@@ -13,9 +13,10 @@ T = TypeVar('T')
 
 
 @dataclass
-class PulsarConf:
+class PulsarConf(BaseModel):
     host: str
     port: str
+    implem = Field(const=True, default="pulsar")
 
 
 """

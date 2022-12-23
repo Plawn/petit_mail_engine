@@ -9,15 +9,16 @@ from pika.adapters.blocking_connection import BlockingChannel, BlockingConnectio
 from pika.spec import Basic
 import time
 from .interface import CallbackType, ChannelInterface, QueueACK, QueueInterface
+from pydantic import BaseModel, Field
 
 T = TypeVar('T')
 
 
-@dataclass
-class RabbitMQConf:
+class RabbitMQConf(BaseModel):
     host: str
     user: str
     password: str
+    implem = Field(const=True, default="rabbit")
 
 
 class RabbitACK(Generic[T], QueueACK[T]):
