@@ -87,9 +87,9 @@ class RabbitChannel(ChannelInterface[T]):
             raise Exception(
                 'Not opened, call init() on the connection or open() on the channel before use')
 
-    def publish(self, name: str, data: T):
+    def publish(self, data: T):
         self.ensure_ready()
-        self.channel.basic_publish(exchange='', routing_key=name, body=data)
+        self.channel.basic_publish(exchange='', routing_key=self.name, body=data)
 
     def open(self):
         self.connection.init()
