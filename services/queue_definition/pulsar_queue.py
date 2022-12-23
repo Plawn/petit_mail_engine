@@ -51,7 +51,7 @@ class PulsarACK(Generic[T], QueueACK[T]):
 
     def failed(self, reason: str) -> None:
         """reason is ignored for now"""
-        self.consumer.negative_acknowledge(message)
+        self.consumer.negative_acknowledge(self.message)
 
 
 class PulsarChannel(ChannelInterface[T]):
