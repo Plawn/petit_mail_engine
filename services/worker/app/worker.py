@@ -88,7 +88,7 @@ def start_worker(conf_file: str, profile: str):
     channel = get_channel(configurer, passive=False).open()
 
     callback = make_callback(context)
-    channel.add_consumer(name=QUEUE_NAME, consumer=callback)
+    channel.add_consumer(callback)
     logging.info('started worker')
     print('started worker')
     channel.start()
