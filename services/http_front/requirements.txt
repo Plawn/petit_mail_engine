@@ -1,5 +1,5 @@
 minio==7.1.0
-fastapi==0.68.0
+fastapi==0.109.1
 uvicorn==0.11.8
 
 # common
